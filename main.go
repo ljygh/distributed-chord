@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"crypto/rand"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -69,25 +68,41 @@ func main() {
 	chordResourcePath = "./resource/chord" + strconv.Itoa(chord.localNode.NodeID) + "/"
 	if _, err = os.Stat(chordResourcePath); err != nil {
 		err = os.Mkdir(chordResourcePath, 0777)
+		if err != nil {
+			println(err)
+			mLog.Fatal(err)
+		}
 	} else {
 		err = os.RemoveAll(chordResourcePath)
+		if err != nil {
+			println(err)
+			mLog.Fatal(err)
+		}
 		err = os.Mkdir(chordResourcePath, 0777)
-	}
-	if err != nil {
-		println(err)
-		mLog.Fatal(err)
+		if err != nil {
+			println(err)
+			mLog.Fatal(err)
+		}
 	}
 
 	chordBackupPath = "./resource/chord" + strconv.Itoa(chord.localNode.NodeID) + "_backup/"
 	if _, err = os.Stat(chordBackupPath); err != nil {
 		err = os.Mkdir(chordBackupPath, 0777)
+		if err != nil {
+			println(err)
+			mLog.Fatal(err)
+		}
 	} else {
 		err = os.RemoveAll(chordBackupPath)
+		if err != nil {
+			println(err)
+			mLog.Fatal(err)
+		}
 		err = os.Mkdir(chordBackupPath, 0777)
-	}
-	if err != nil {
-		println(err)
-		mLog.Fatal(err)
+		if err != nil {
+			println(err)
+			mLog.Fatal(err)
+		}
 	}
 
 	// Register rpc and serve
@@ -198,7 +213,7 @@ func httpsHandler(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		body, err := ioutil.ReadAll(req.Body)
+		body, err := io.ReadAll(req.Body)
 		if err != nil {
 			cLog.Println(err)
 			mLog.Println(err)
@@ -215,7 +230,7 @@ func httpsHandler(w http.ResponseWriter, req *http.Request) {
 
 // remove all dirs in resource
 func remove_dirs_logs() {
-	files, err := ioutil.ReadDir("./resource")
+	files, err := os.ReadDir("./resource")
 	if err != nil {
 		log.Fatal("Error while reading dir: ", err)
 	}
@@ -227,7 +242,7 @@ func remove_dirs_logs() {
 		}
 	}
 
-	files, err = ioutil.ReadDir("./log")
+	files, err = os.ReadDir("./log")
 	if err != nil {
 		log.Fatal("Error while reading dir: ", err)
 	}

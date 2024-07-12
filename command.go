@@ -29,7 +29,7 @@ func (chord *Chord) lookup(filename string) error {
 
 	// Ask the node if the file exists
 	res := node.isLocalFileExist(filename)
-	if res == true {
+	if res {
 		println("File exists in the node:", node.NodeID, node.Ip, node.Port)
 	} else {
 		println("The file doesn't exist")
@@ -58,11 +58,11 @@ func (chord *Chord) storeFile(filename string) error {
 	// create the file and send it to the node
 	fileBytes := []byte("This is file " + filename)
 	fileBytes = encrypt(fileBytes)
-	if err != nil {
-		cLog.Println("Error while reading file:", err)
-		mLog.Println("Error while reading file:", err)
-		return err
-	}
+	// if err != nil {
+	// 	cLog.Println("Error while reading file:", err)
+	// 	mLog.Println("Error while reading file:", err)
+	// 	return err
+	// }
 	node.remoteStoreFile(filename, fileBytes, false)
 	nodePredecessor, err := node.getPredecessor()
 	if err == nil && nodePredecessor != nil && node.NodeID != nodePredecessor.NodeID {

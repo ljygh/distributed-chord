@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"net/rpc"
 	"os"
 	"strconv"
@@ -138,7 +137,7 @@ func (chord *Chord) updateKeys(pre int, node *Node) error {
 		}
 		if inRange(fileID, pre, node.NodeID, false, true) {
 			mLog.Println("File", file.Name(), "should be sent to node", node.NodeID)
-			fileBytes, err := ioutil.ReadFile(chordResourcePath + file.Name())
+			fileBytes, err := os.ReadFile(chordResourcePath + file.Name())
 			if err != nil {
 				cLog.Println("Error in ReadFile:", err)
 				mLog.Println("Error in ReadFile:", err)
@@ -193,7 +192,7 @@ func (chord *Chord) checkKeys() error {
 			}
 			mLog.Println("File", file.Name(), "should be sent to node", node.NodeID)
 			if node.NodeID != chord.localNode.NodeID {
-				fileBytes, err := ioutil.ReadFile(chordResourcePath + file.Name())
+				fileBytes, err := os.ReadFile(chordResourcePath + file.Name())
 				if err != nil {
 					cLog.Println("Error in ReadFile:", err)
 					mLog.Println("Error in ReadFile:", err)

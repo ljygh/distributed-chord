@@ -88,14 +88,14 @@ func (node *Node) findSuccessor(id int) (*Node, error) {
 	return node.rpcCall("Chord.FindSuccessor", args)
 }
 
-func (node *Node) findPredecessor(id int) (*Node, error) {
-	if node.NodeID == chord.localNode.NodeID {
-		return chord.findPredecessor(id)
-	}
-	mLog.Println("Remote find predecessor")
-	args := Args{id, 0, nil, false, ""}
-	return node.rpcCall("Chord.FindPredecessor", args)
-}
+// func (node *Node) findPredecessor(id int) (*Node, error) {
+// 	if node.NodeID == chord.localNode.NodeID {
+// 		return chord.findPredecessor(id)
+// 	}
+// 	mLog.Println("Remote find predecessor")
+// 	args := Args{id, 0, nil, false, ""}
+// 	return node.rpcCall("Chord.FindPredecessor", args)
+// }
 
 func (node *Node) closestPrecedingFinger(id int, findPredecessor bool) (*Node, error) {
 	if node.NodeID == chord.localNode.NodeID {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"net/rpc"
 	"os"
 	"strconv"
@@ -157,7 +156,7 @@ func (chord *Chord) allKeysBackup() error {
 
 	// Tranverse all files and see if it should be transfered to other nodes
 	for _, file := range files {
-		fileBytes, err := ioutil.ReadFile(chordResourcePath + file.Name())
+		fileBytes, err := os.ReadFile(chordResourcePath + file.Name())
 		if err != nil {
 			cLog.Println("Error in ReadFile:", err)
 			mLog.Println("Error in ReadFile:", err)
@@ -190,7 +189,7 @@ func (chord *Chord) recoverBackupKeys() error {
 
 	// Tranverse all files and see if it should be transfered to other nodes
 	for _, file := range files {
-		fileBytes, err := ioutil.ReadFile(chordBackupPath + file.Name())
+		fileBytes, err := os.ReadFile(chordBackupPath + file.Name())
 		if err != nil {
 			cLog.Println("Error in ReadFile:", err)
 			mLog.Println("Error in ReadFile:", err)
