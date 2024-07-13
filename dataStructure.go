@@ -63,7 +63,6 @@ type Setting struct {
 	ID           int    `json:"id"`
 	IP           string `json:"IP"`
 	Port         int    `json:"port"`
-	IfClog       bool   `json:"ifClog"`
 	IfMlog       bool   `json:"ifMlog"`
 	IfSlog       bool   `json:"ifSlog"`
 	LogPath      string `json:"logPath"`

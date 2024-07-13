@@ -42,6 +42,12 @@ func main() {
 	logPath := setting.LogPath
 	resourcePath := setting.ResourcePath
 
+	// While creating first node, remove log and resource folders.
+	if setting.IfCreate {
+		remove_dirs(logPath)
+		remove_dirs(resourcePath)
+	}
+
 	// Create resource and log folders if they don't exist.
 	if _, err := os.Stat(logPath); os.IsNotExist(err) {
 		err := os.Mkdir(logPath, 0777)
@@ -60,22 +66,29 @@ func main() {
 	}
 
 	// Set log
-	mainLogFile, err := os.Create("./log/chord_" + strconv.Itoa(chord.localNode.NodeID) + "_main.log")
-	if err != nil {
-		log.Fatalln(err)
+	if setting.IfMlog {
+		mainLogFile, err := os.Create(logPath + "/chord_" + strconv.Itoa(chord.localNode.NodeID) + "_main.log")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		mLog = *log.New(mainLogFile, "", log.Lshortfile)
+		println("Set mLog file:", logPath+"/chord_"+strconv.Itoa(chord.localNode.NodeID)+"_main.log")
+		defer mainLogFile.Close()
+	} else {
+		mLog = *log.New(io.Discard, "", log.Lshortfile)
 	}
-	defer mainLogFile.Close()
 
-	// stableLogFile, err := os.Create("./log/chord_" + strconv.Itoa(chord.localNode.NodeID) + "_stabilize.log")
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
-	// defer stableLogFile.Close()
-
-	mLog = *log.New(mainLogFile, "", log.Lshortfile)
-	// mLog = *log.New(io.Discard, "", log.Lshortfile)
-	// sLog = *log.New(mainLogFile, "", log.Lshortfile)
-	sLog = *log.New(io.Discard, "", log.Lshortfile)
+	if setting.IfSlog {
+		stableLogFile, err := os.Create(logPath + "/chord_" + strconv.Itoa(chord.localNode.NodeID) + "_stabilize.log")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		sLog = *log.New(stableLogFile, "", log.Lshortfile)
+		println("Set sLog file:", logPath+"/chord_"+strconv.Itoa(chord.localNode.NodeID)+"_stabilize.log")
+		defer stableLogFile.Close()
+	} else {
+		sLog = *log.New(io.Discard, "", log.Lshortfile)
+	}
 
 	// Init key and nonce for encrypt
 	key = make([]byte, 32)
@@ -91,8 +104,8 @@ func main() {
 	}
 
 	// Create chord resource folder and backup folder
-	chordResourcePath = "./resource/chord" + strconv.Itoa(chord.localNode.NodeID) + "/"
-	if _, err = os.Stat(chordResourcePath); err != nil {
+	chordResourcePath = resourcePath + "/chord" + strconv.Itoa(chord.localNode.NodeID) + "/"
+	if _, err := os.Stat(chordResourcePath); err != nil {
 		err = os.Mkdir(chordResourcePath, 0777)
 		if err != nil {
 			println(err)
@@ -110,9 +123,10 @@ func main() {
 			mLog.Fatal(err)
 		}
 	}
+	println("Create resource folder:", resourcePath+"/chord"+strconv.Itoa(chord.localNode.NodeID)+"/")
 
-	chordBackupPath = "./resource/chord" + strconv.Itoa(chord.localNode.NodeID) + "_backup/"
-	if _, err = os.Stat(chordBackupPath); err != nil {
+	chordBackupPath = resourcePath + "/chord" + strconv.Itoa(chord.localNode.NodeID) + "_backup/"
+	if _, err := os.Stat(chordBackupPath); err != nil {
 		err = os.Mkdir(chordBackupPath, 0777)
 		if err != nil {
 			println(err)
@@ -130,6 +144,7 @@ func main() {
 			mLog.Fatal(err)
 		}
 	}
+	println("Create backup folder:", resourcePath+"/chord"+strconv.Itoa(chord.localNode.NodeID)+"_backup/")
 
 	// Register rpc and serve
 	rpc.Register(&chord)
