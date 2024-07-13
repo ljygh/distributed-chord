@@ -1,4 +1,6 @@
 /https
 /scripts
+/resource
+/log
 chord
 go.mod

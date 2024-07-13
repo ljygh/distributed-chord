@@ -1,0 +1,16 @@
+{
+    "ts": 3000,
+    "tff": 1000,
+    "tcp": 3000,
+    "id": 0,
+    "IP": "192.168.1.108",
+    "port": 8000,
+    "ifClog": false,
+    "ifMlog": false,
+    "ifSlog": false,
+    "logPath": "./log",
+    "resourcePath": "./resource",
+    "ifCreate": true,
+    "remoteIP": null,
+    "remotePort": null
+}

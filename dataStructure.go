@@ -55,3 +55,21 @@ var successorList [m]*Node
 // key and nonce to encrypt files
 var key []byte
 var nonce []byte
+
+// Struct used for setting
+type Setting struct {
+	Ts           int    `json:"ts"`
+	Tff          int    `json:"tff"`
+	Tcp          int    `json:"tcp"`
+	ID           int    `json:"id"`
+	IP           string `json:"IP"`
+	Port         int    `json:"port"`
+	IfClog       bool   `json:"ifClog"`
+	IfMlog       bool   `json:"ifMlog"`
+	IfSlog       bool   `json:"ifSlog"`
+	LogPath      string `json:"logPath"`
+	ResourcePath string `json:"resourcePath"`
+	IfCreate     bool   `json:"ifCreate"`
+	RemoteIP     string `json:"remoteIP"`
+	RemotePort   int    `json:"remotePort"`
+}

@@ -16,19 +16,48 @@ import (
 )
 
 func main() {
+	var setting Setting
+
+	// Read settings
+	if len(os.Args) < 2 {
+		println("Please input a path of setting file")
+		return
+	} else {
+		settingPath := os.Args[1]
+		getSetting(settingPath, &setting)
+	}
+
 	// Init chord local node
-	nodeID, _ := strconv.Atoi(os.Args[1])
-	IP := os.Args[2]
-	port, _ := strconv.Atoi(os.Args[3])
+	nodeID := setting.ID
+	IP := setting.IP
+	port := setting.Port
 	chord.localNode = &Node{nodeID, IP, port}
 
 	// Init ts tff tcp and m
-	ts, _ = strconv.Atoi(os.Args[4])
-	tff, _ = strconv.Atoi(os.Args[5])
-	tcp, _ = strconv.Atoi(os.Args[6])
+	ts = setting.Ts
+	tff = setting.Tff
+	tcp = setting.Tcp
 
-	// Clear resource dirs and logs
-	remove_dirs_logs()
+	// Init log path and resource path
+	logPath := setting.LogPath
+	resourcePath := setting.ResourcePath
+
+	// Create resource and log folders if they don't exist.
+	if _, err := os.Stat(logPath); os.IsNotExist(err) {
+		err := os.Mkdir(logPath, 0777)
+		if err != nil {
+			log.Println("Error while creating 'log' folder:", err)
+			return
+		}
+	}
+
+	if _, err := os.Stat(resourcePath); os.IsNotExist(err) {
+		err := os.Mkdir(resourcePath, 0777)
+		if err != nil {
+			log.Println("Error while creating 'resource' folder:", err)
+			return
+		}
+	}
 
 	// Set log
 	mainLogFile, err := os.Create("./log/chord_" + strconv.Itoa(chord.localNode.NodeID) + "_main.log")
@@ -46,8 +75,8 @@ func main() {
 	// cLog = *log.New(os.Stdout, "", log.Flags())
 	cLog = *log.New(io.Discard, "", log.Flags())
 	cLog.SetFlags(0)
-	// mLog = *log.New(mainLogFile, "", log.Lshortfile)
-	mLog = *log.New(io.Discard, "", log.Lshortfile)
+	mLog = *log.New(mainLogFile, "", log.Lshortfile)
+	// mLog = *log.New(io.Discard, "", log.Lshortfile)
 	// sLog = *log.New(mainLogFile, "", log.Lshortfile)
 	sLog = *log.New(io.Discard, "", log.Lshortfile)
 
@@ -225,30 +254,5 @@ func httpsHandler(w http.ResponseWriter, req *http.Request) {
 			mLog.Println(err)
 			return
 		}
-	}
-}
-
-// remove all dirs in resource
-func remove_dirs_logs() {
-	files, err := os.ReadDir("./resource")
-	if err != nil {
-		log.Fatal("Error while reading dir: ", err)
-	}
-
-	for _, file := range files {
-		filename := file.Name()
-		if file.IsDir() {
-			os.RemoveAll("./resource/" + filename)
-		}
-	}
-
-	files, err = os.ReadDir("./log")
-	if err != nil {
-		log.Fatal("Error while reading dir: ", err)
-	}
-
-	for _, file := range files {
-		filename := file.Name()
-		os.RemoveAll("./log/" + filename)
 	}
 }

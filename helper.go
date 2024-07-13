@@ -4,9 +4,12 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"encoding/json"
+	"fmt"
 	"io"
 	"math"
 	"net/rpc"
+	"os"
 	"strconv"
 )
 
@@ -71,4 +74,29 @@ func encrypt(plainTxt []byte) []byte {
 
 	ciphertext := aesgcm.Seal(nil, nonce, plainTxt, nil)
 	return ciphertext
+}
+
+// Get setting from json file
+func getSetting(filePath string, setting *Setting) {
+	// Open the JSON file
+	jsonFile, err := os.Open(filePath)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer jsonFile.Close()
+
+	// Read the file content
+	byteValue, err := io.ReadAll(jsonFile)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// Unmarshal the JSON data into the struct
+	err = json.Unmarshal(byteValue, setting)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
