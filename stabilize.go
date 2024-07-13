@@ -36,7 +36,6 @@ func (chord *Chord) stabilize() error {
 	if err != nil {
 		sLog.Println("Error in getSuccessor:", err)
 		mLog.Println("Error in getSuccessor:", err)
-		println("Error in getSuccessor:", err)
 		return err
 	}
 	if x != nil {
@@ -104,7 +103,6 @@ func (chord *Chord) fixFingers() error {
 	if err != nil {
 		sLog.Println("Error in findSuccessor:", err)
 		mLog.Println("Error in findSuccessor:", err)
-		println("Error in findSuccessor:", err)
 		return err
 	}
 	if next == 1 {
@@ -203,7 +201,6 @@ func (chord *Chord) checkKeys() error {
 			if err != nil {
 				sLog.Println("Error in findSuccessor:", err)
 				mLog.Println("Error in findSuccessor:", err)
-				println("Error in findSuccessor:", err)
 				return err
 			}
 			sLog.Println("File", file.Name(), "should be sent to node", node.NodeID)

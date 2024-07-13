@@ -82,7 +82,6 @@ func (chord *Chord) maintainSuccessorList() error {
 		node, err = node.getSuccessor()
 		if err != nil {
 			sLog.Println("Error in getSuccessor", err)
-			println("Error in getSuccessor", err)
 			mLog.Println("Error in getSuccessor", err)
 			return err
 		}

@@ -2,14 +2,14 @@
     "ts": 3000,
     "tff": 1000,
     "tcp": 3000,
-    "id": 0,
+    "id": 3,
     "IP": "192.168.1.108",
-    "port": 8000,
+    "port": 8002,
     "ifMlog": true,
     "ifSlog": false,
     "logPath": "./log",
     "resourcePath": "./resource",
-    "ifCreate": true,
-    "remoteIP": null,
-    "remotePort": null
+    "ifCreate": false,
+    "remoteIP": "192.168.1.108",
+    "remotePort": 8000
 }
