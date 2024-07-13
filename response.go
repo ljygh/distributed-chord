@@ -9,7 +9,7 @@ func (chord *Chord) FindSuccessor(args Args, reply *Node) error { // Args need t
 	node, err := chord.findSuccessor(args.Arg1)
 	if err != nil {
 		mLog.Println("Error in findSuccessor:", err)
-		cLog.Println("Error in findSuccessor:", err)
+		println("Error in findSuccessor:", err)
 		return err
 	}
 	reply.NodeID = node.NodeID
@@ -25,7 +25,7 @@ func (chord *Chord) FindPredecessor(args Args, reply *Node) error {
 	node, err := chord.findPredecessor(args.Arg1)
 	if err != nil {
 		mLog.Println("Error in findPredecessor:", err)
-		cLog.Println("Error in findPredecessor:", err)
+		println("Error in findPredecessor:", err)
 		return err
 	}
 	reply.NodeID = node.NodeID

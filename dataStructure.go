@@ -40,7 +40,6 @@ var ts int = 500
 var tff int = 500
 var tcp int = 500
 
-var cLog log.Logger // command log
 var mLog log.Logger // main thread log
 var sLog log.Logger // stabilizing thread log
 

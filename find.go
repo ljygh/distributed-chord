@@ -14,13 +14,13 @@ func (chord *Chord) findSuccessor(id int) (*Node, error) {
 		node, err = node.closestPrecedingFinger(id, false)
 		if err != nil {
 			mLog.Println("Error in closestPrecedingFinger:", err)
-			cLog.Println("Error in closestPrecedingFinger:", err)
+			println("Error in closestPrecedingFinger:", err)
 			return nil, err
 		}
 		nodeSuccessor, err = node.getSuccessor()
 		if err != nil {
 			mLog.Println("Error in getSuccessor:", err)
-			cLog.Println("Error in getSuccessor:", err)
+			println("Error in getSuccessor:", err)
 			return nil, err
 		}
 	}
@@ -28,7 +28,7 @@ func (chord *Chord) findSuccessor(id int) (*Node, error) {
 	nodeSuccessor, err = node.getSuccessor()
 	if err != nil {
 		mLog.Println("Error in getSuccessor:", err)
-		cLog.Println("Error in getSuccessor:", err)
+		println("Error in getSuccessor:", err)
 		return nil, err
 	}
 	mLog.Println("The successor is:", nodeSuccessor.NodeID)
@@ -46,13 +46,13 @@ func (chord *Chord) findPredecessor(id int) (*Node, error) {
 		node, err = node.closestPrecedingFinger(id, true)
 		if err != nil {
 			mLog.Println("Error in closestPrecedingFinger:", err)
-			cLog.Println("Error in closestPrecedingFinger:", err)
+			println("Error in closestPrecedingFinger:", err)
 			return nil, err
 		}
 		nodeSuccessor, err = node.getSuccessor()
 		if err != nil {
 			mLog.Println("Error in getSuccessor:", err)
-			cLog.Println("Error in getSuccessor:", err)
+			println("Error in getSuccessor:", err)
 			return nil, err
 		}
 	}

@@ -40,7 +40,6 @@ func (node *Node) rpcCall(function string, args Args) (*Node, error) {
 	if err != nil {
 		mLog.Println("Chord", chord.localNode.NodeID, "call to", node.NodeID, node.Ip+":"+strconv.Itoa(node.Port), "for", function)
 		mLog.Println("dialing:", err)
-		cLog.Println("dialing:", err)
 		return nil, err
 	}
 	defer client.Close()
@@ -50,7 +49,7 @@ func (node *Node) rpcCall(function string, args Args) (*Node, error) {
 	err = client.Call(function, args, &reply)
 	if err != nil {
 		mLog.Println("chord error:", err)
-		cLog.Println("chord error:", err)
+		println("chord error:", err)
 		return nil, err
 	}
 	return reply, nil

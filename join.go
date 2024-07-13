@@ -31,7 +31,7 @@ func (chord *Chord) join(node Node) {
 	err = chord.initFingerTable(node)
 	if err != nil {
 		mLog.Println("Fail to init finger table:", err)
-		cLog.Println("Fail to init finger table:", err)
+		println("Fail to init finger table:", err)
 		return
 	}
 
@@ -39,7 +39,7 @@ func (chord *Chord) join(node Node) {
 	err = chord.updateOthers()
 	if err != nil {
 		mLog.Println("Fail to update others:", err)
-		cLog.Println("Fail to update others:", err)
+		println("Fail to update others:", err)
 		return
 	}
 
@@ -61,7 +61,7 @@ func (chord *Chord) initFingerTable(node Node) error {
 	chord.fingerTable[1].node, err = node.findSuccessor(chord.fingerTable[1].start)
 	if err != nil {
 		mLog.Println("Error in findSuccessor:", err)
-		cLog.Println("Error in findSuccessor:", err)
+		println("Error in findSuccessor:", err)
 		return err
 	}
 	chord.successor = chord.fingerTable[1].node
@@ -69,7 +69,7 @@ func (chord *Chord) initFingerTable(node Node) error {
 	chord.predecessor, err = chord.successor.getPredecessor()
 	if err != nil {
 		mLog.Println("Error in getPredecessor:", err)
-		cLog.Println("Error in getPredecessor:", err)
+		println("Error in getPredecessor:", err)
 		return err
 	}
 	if chord.predecessor != nil {
@@ -90,7 +90,7 @@ func (chord *Chord) initFingerTable(node Node) error {
 			chord.fingerTable[i+1].node, err = node.findSuccessor(chord.fingerTable[i+1].start)
 			if err != nil {
 				mLog.Println("Error in findSuccessor:", err)
-				cLog.Println("Error in findSuccessor:", err)
+				println("Error in findSuccessor:", err)
 				return err
 			}
 		}
@@ -108,14 +108,14 @@ func (chord *Chord) updateOthers() error {
 		p, err := chord.findPredecessor(minusInRing(chord.localNode.NodeID, int(math.Pow(2, float64(i-1)))))
 		if err != nil {
 			mLog.Println("Error in findPredecessor:", err)
-			cLog.Println("Error in findPredecessor:", err)
+			println("Error in findPredecessor:", err)
 			return err
 		}
 		mLog.Println("Posible predecessor:", p.NodeID)
 		resNode, err := p.updateFingerTable(chord.localNode, i)
 		if err != nil {
 			mLog.Println("Error in updateFingerTable:", err)
-			cLog.Println("Error in updateFingerTable:", err)
+			println("Error in updateFingerTable:", err)
 			return err
 		}
 		for resNode != nil && len(resNode.Ip) > 5 { // if resnode update, continue to update its predecessor
@@ -124,7 +124,7 @@ func (chord *Chord) updateOthers() error {
 			resNode, err = resNode.updateFingerTable(chord.localNode, i)
 			if err != nil {
 				mLog.Println("Error in updateFingerTable:", err)
-				cLog.Println("Error in updateFingerTable:", err)
+				println("Error in updateFingerTable:", err)
 				return err
 			}
 		}

@@ -16,13 +16,13 @@ func (chord *Chord) lookup(filename string) error {
 	// find the node which should store this file
 	fileID, err := strconv.Atoi(filename)
 	if err != nil {
-		cLog.Println("Filename is not an integer:", err)
+		println("Filename is not an integer:", err)
 		return err
 	}
 	node, err := chord.findSuccessor(fileID)
 	if err != nil {
 		mLog.Println("Error in findSuccessor:", err)
-		cLog.Println("Error in findSuccessor:", err)
+		println("Error in findSuccessor:", err)
 		return err
 	}
 	println("The possible node which stores this file is: ", node.NodeID, node.Ip, node.Port)
@@ -43,14 +43,14 @@ func (chord *Chord) storeFile(filename string) error {
 	println("Storing file:", filename)
 	fileID, err := strconv.Atoi(filename)
 	if err != nil {
-		cLog.Println("Filename is not an integer:", err)
+		println("Filename is not an integer:", err)
 		mLog.Println("Filename is not an integer:", err)
 		return err
 	}
 	node, err := chord.findSuccessor(fileID)
 	if err != nil {
 		mLog.Println("Error in findSuccessor:", err)
-		cLog.Println("Error in findSuccessor:", err)
+		println("Error in findSuccessor:", err)
 		return err
 	}
 	println("The file should be uploaded to node:", node.NodeID, node.Ip, node.Port)
@@ -123,21 +123,21 @@ func (chord *Chord) localStoreFile(filename string, fileBytes []byte, isBackup b
 
 	file, err := os.Create(filepath)
 	if err != nil {
-		cLog.Println(err)
+		println(err)
 		mLog.Println(err)
 		return
 	}
 
 	_, err = file.Write(fileBytes)
 	if err != nil {
-		cLog.Println(err)
+		println(err)
 		mLog.Println(err)
 		return
 	}
 
 	err = file.Close()
 	if err != nil {
-		cLog.Println(err)
+		println(err)
 		mLog.Println(err)
 	}
 }
@@ -152,7 +152,7 @@ func (node *Node) isLocalFileExist(filename string) bool {
 	// dial rpc
 	client, err := rpc.DialHTTP("tcp", node.Ip+":"+strconv.Itoa(node.Port))
 	if err != nil {
-		cLog.Println("dialing:", err)
+		println("dialing:", err)
 		mLog.Fatal("dialing:", err)
 	}
 	defer client.Close()
@@ -162,7 +162,7 @@ func (node *Node) isLocalFileExist(filename string) bool {
 	var reply *bool
 	err = client.Call("Chord.IsLocalFileExist", args, &reply)
 	if err != nil {
-		cLog.Println("chord error:", err)
+		println("chord error:", err)
 		mLog.Fatal("chord error:", err)
 	}
 	return *reply
@@ -205,7 +205,7 @@ func (node *Node) remoteStoreFile(filename string, fileBytes []byte, isBackup bo
 	mLog.Println("Post to:", url)
 	resp, err := client.Post(url, "text/plain", bytes.NewReader(fileBytes))
 	if err != nil {
-		cLog.Println(err)
+		println(err)
 		mLog.Println(err)
 		return
 	}

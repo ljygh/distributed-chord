@@ -72,9 +72,6 @@ func main() {
 	// }
 	// defer stableLogFile.Close()
 
-	// cLog = *log.New(os.Stdout, "", log.Flags())
-	cLog = *log.New(io.Discard, "", log.Flags())
-	cLog.SetFlags(0)
 	mLog = *log.New(mainLogFile, "", log.Lshortfile)
 	// mLog = *log.New(io.Discard, "", log.Lshortfile)
 	// sLog = *log.New(mainLogFile, "", log.Lshortfile)
@@ -237,20 +234,20 @@ func httpsHandler(w http.ResponseWriter, req *http.Request) {
 			file, err = os.Create(chordBackupPath + filename)
 		}
 		if err != nil {
-			cLog.Println(err)
+			println(err)
 			mLog.Println(err)
 			return
 		}
 
 		body, err := io.ReadAll(req.Body)
 		if err != nil {
-			cLog.Println(err)
+			println(err)
 			mLog.Println(err)
 			return
 		}
 		_, err = file.Write(body)
 		if err != nil {
-			cLog.Println(err)
+			println(err)
 			mLog.Println(err)
 			return
 		}
