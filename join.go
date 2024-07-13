@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"math"
 )
 
@@ -31,16 +32,14 @@ func (chord *Chord) join(node Node) {
 	err = chord.initFingerTable(node)
 	if err != nil {
 		mLog.Println("Fail to init finger table:", err)
-		println("Fail to init finger table:", err)
-		return
+		log.Fatalln("Fail to init finger table:", err)
 	}
 
 	// Update others' fingers
 	err = chord.updateOthers()
 	if err != nil {
 		mLog.Println("Fail to update others:", err)
-		println("Fail to update others:", err)
-		return
+		log.Fatalln("Fail to update others:", err)
 	}
 
 	// Maintain successor list and let successor update keys

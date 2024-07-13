@@ -52,16 +52,16 @@ func main() {
 	if _, err := os.Stat(logPath); os.IsNotExist(err) {
 		err := os.Mkdir(logPath, 0777)
 		if err != nil {
-			log.Println("Error while creating 'log' folder:", err)
-			return
+			mLog.Println("Error while creating 'log' folder:", err)
+			log.Fatalln("Error while creating 'log' folder:", err)
 		}
 	}
 
 	if _, err := os.Stat(resourcePath); os.IsNotExist(err) {
 		err := os.Mkdir(resourcePath, 0777)
 		if err != nil {
-			log.Println("Error while creating 'resource' folder:", err)
-			return
+			mLog.Println("Error while creating 'resource' folder:", err)
+			log.Fatalln("Error while creating 'resource' folder:", err)
 		}
 	}
 
@@ -69,6 +69,7 @@ func main() {
 	if setting.IfMlog {
 		mainLogFile, err := os.Create(logPath + "/chord_" + strconv.Itoa(chord.localNode.NodeID) + "_main.log")
 		if err != nil {
+			mLog.Println(err)
 			log.Fatalln(err)
 		}
 		mLog = *log.New(mainLogFile, "", log.Lshortfile)
@@ -81,6 +82,7 @@ func main() {
 	if setting.IfSlog {
 		stableLogFile, err := os.Create(logPath + "/chord_" + strconv.Itoa(chord.localNode.NodeID) + "_stabilize.log")
 		if err != nil {
+			mLog.Fatalln(err)
 			log.Fatalln(err)
 		}
 		sLog = *log.New(stableLogFile, "", log.Lshortfile)
@@ -109,18 +111,18 @@ func main() {
 		err = os.Mkdir(chordResourcePath, 0777)
 		if err != nil {
 			println(err)
-			mLog.Fatal(err)
+			mLog.Fatalln(err)
 		}
 	} else {
 		err = os.RemoveAll(chordResourcePath)
 		if err != nil {
 			println(err)
-			mLog.Fatal(err)
+			mLog.Fatalln(err)
 		}
 		err = os.Mkdir(chordResourcePath, 0777)
 		if err != nil {
 			println(err)
-			mLog.Fatal(err)
+			mLog.Fatalln(err)
 		}
 	}
 	println("Create resource folder:", resourcePath+"/chord"+strconv.Itoa(chord.localNode.NodeID)+"/")
@@ -130,18 +132,18 @@ func main() {
 		err = os.Mkdir(chordBackupPath, 0777)
 		if err != nil {
 			println(err)
-			mLog.Fatal(err)
+			mLog.Fatalln(err)
 		}
 	} else {
 		err = os.RemoveAll(chordBackupPath)
 		if err != nil {
 			println(err)
-			mLog.Fatal(err)
+			mLog.Fatalln(err)
 		}
 		err = os.Mkdir(chordBackupPath, 0777)
 		if err != nil {
 			println(err)
-			mLog.Fatal(err)
+			mLog.Fatalln(err)
 		}
 	}
 	println("Create backup folder:", resourcePath+"/chord"+strconv.Itoa(chord.localNode.NodeID)+"_backup/")
@@ -197,12 +199,14 @@ func main() {
 			err := chord.storeFile(filename)
 			if err != nil {
 				println("Fail to store file:", err)
+				mLog.Fatalln("Fail to store file:", err)
 			}
 		} else if strings.HasPrefix(input, "find") {
 			filename := strings.SplitAfter(input, " ")[1]
 			err := chord.lookup(filename)
 			if err != nil {
 				println("Fail to find file:", err)
+				mLog.Fatalln("Fail to find file:", err)
 			}
 		} else {
 			println("Please write the correct syntax")
@@ -250,20 +254,19 @@ func httpsHandler(w http.ResponseWriter, req *http.Request) {
 		}
 		if err != nil {
 			println(err)
-			mLog.Println(err)
-			return
+			mLog.Fatalln(err)
 		}
 
 		body, err := io.ReadAll(req.Body)
 		if err != nil {
 			println(err)
-			mLog.Println(err)
+			mLog.Fatalln(err)
 			return
 		}
 		_, err = file.Write(body)
 		if err != nil {
 			println(err)
-			mLog.Println(err)
+			mLog.Fatalln(err)
 			return
 		}
 	}

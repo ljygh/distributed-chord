@@ -16,6 +16,7 @@ func (chord *Chord) stabilize() error {
 	// check if successor is alive
 	err := chord.checkSuccessor()
 	if err != nil {
+		sLog.Println("Fail to check successor:", err)
 		mLog.Println("Fail to check successor:", err)
 		println("Fail to check successor:", err)
 		return err
@@ -24,6 +25,7 @@ func (chord *Chord) stabilize() error {
 	// maintain successor list
 	err = chord.maintainSuccessorList()
 	if err != nil {
+		sLog.Println("Fail to maintain successor list:", err)
 		mLog.Println("Fail to maintain successor list:", err)
 		println("Fail to maintain successor list:", err)
 		return err
@@ -32,6 +34,7 @@ func (chord *Chord) stabilize() error {
 	// check if there is a new joined node between local node and successor, if so, set it as successor
 	x, err := chord.successor.getPredecessor()
 	if err != nil {
+		sLog.Println("Error in getSuccessor:", err)
 		mLog.Println("Error in getSuccessor:", err)
 		println("Error in getSuccessor:", err)
 		return err
@@ -57,6 +60,7 @@ func (chord *Chord) stabilize() error {
 	// check if all keys should stay in the local node
 	err = chord.checkKeys()
 	if err != nil {
+		sLog.Println("Fail to check keys:", err)
 		mLog.Println("Fail to check keys:", err)
 		println("Fail to check keys:", err)
 		return err
@@ -64,6 +68,7 @@ func (chord *Chord) stabilize() error {
 
 	err = chord.checkBackup()
 	if err != nil {
+		sLog.Println("Fail to check backup:", err)
 		mLog.Println("Fail to check backup:", err)
 		println("Fail to check backup:", err)
 		return err
@@ -80,7 +85,9 @@ func (chord *Chord) notify(node *Node) {
 
 		err := chord.allKeysBackup()
 		if err != nil {
-			sLog.Print("Fail to backup all keys:", err)
+			println("Fail to backup all keys:", err)
+			sLog.Println("Fail to backup all keys:", err)
+			mLog.Fatalln("Fail to backup all keys:", err)
 		}
 	}
 }
@@ -95,6 +102,7 @@ func (chord *Chord) fixFingers() error {
 	var err error
 	chord.fingerTable[next].node, err = chord.findSuccessor(chord.fingerTable[next].start)
 	if err != nil {
+		sLog.Println("Error in findSuccessor:", err)
 		mLog.Println("Error in findSuccessor:", err)
 		println("Error in findSuccessor:", err)
 		return err
@@ -108,10 +116,11 @@ func (chord *Chord) fixFingers() error {
 
 // Update keys while a node join before the local node
 func (chord *Chord) updateKeys(pre int, node *Node) error {
-	mLog.Println("Update keys")
+	sLog.Println("Update keys")
 	// Open the resource directory
 	dir, err := os.Open(chordResourcePath)
 	if err != nil {
+		sLog.Println("Error in Open", err)
 		println("Error in Open", err)
 		mLog.Println("Error in Open", err)
 		return err
@@ -122,6 +131,7 @@ func (chord *Chord) updateKeys(pre int, node *Node) error {
 	// Get all files of the directory
 	files, err := dir.Readdir(0)
 	if err != nil {
+		sLog.Println("Error in Readdir", err)
 		println("Error in Readdir", err)
 		mLog.Println("Error in Readdir", err)
 		return err
@@ -131,14 +141,16 @@ func (chord *Chord) updateKeys(pre int, node *Node) error {
 	for _, file := range files {
 		fileID, err := strconv.Atoi(file.Name())
 		if err != nil {
+			sLog.Println("Error in Atoi", err)
 			println("Error in Atoi", err)
 			mLog.Println("Error in Atoi", err)
 			return err
 		}
 		if inRange(fileID, pre, node.NodeID, false, true) {
-			mLog.Println("File", file.Name(), "should be sent to node", node.NodeID)
+			sLog.Println("File", file.Name(), "should be sent to node", node.NodeID)
 			fileBytes, err := os.ReadFile(chordResourcePath + file.Name())
 			if err != nil {
+				sLog.Println("Error in ReadFile:", err)
 				println("Error in ReadFile:", err)
 				mLog.Println("Error in ReadFile:", err)
 				return err
@@ -152,15 +164,16 @@ func (chord *Chord) updateKeys(pre int, node *Node) error {
 
 // Check all keys while stabilization
 func (chord *Chord) checkKeys() error {
-	mLog.Println("Check keys")
+	sLog.Println("Check keys")
 	if chord.predecessor == nil {
-		mLog.Print("Predecessor is nil, can't check keys")
+		sLog.Print("Predecessor is nil, can't check keys")
 		return nil
 	}
 
 	// Open the resource directory
 	dir, err := os.Open(chordResourcePath)
 	if err != nil {
+		sLog.Println("Error in Open", err)
 		println("Error in Open", err)
 		mLog.Println("Error in Open", err)
 		return err
@@ -170,6 +183,7 @@ func (chord *Chord) checkKeys() error {
 	// Get all files of the directory
 	files, err := dir.Readdir(0)
 	if err != nil {
+		sLog.Println("Error in Readdir", err)
 		println("Error in Readdir", err)
 		mLog.Println("Error in Readdir", err)
 		return err
@@ -179,6 +193,7 @@ func (chord *Chord) checkKeys() error {
 	for _, file := range files {
 		fileID, err := strconv.Atoi(file.Name())
 		if err != nil {
+			sLog.Println("Error in Atoi", err)
 			println("Error in Atoi", err)
 			mLog.Println("Error in Atoi", err)
 			return err
@@ -186,14 +201,16 @@ func (chord *Chord) checkKeys() error {
 		if !inRange(fileID, chord.predecessor.NodeID, chord.localNode.NodeID, false, true) {
 			node, err := chord.findSuccessor(fileID)
 			if err != nil {
+				sLog.Println("Error in findSuccessor:", err)
 				mLog.Println("Error in findSuccessor:", err)
 				println("Error in findSuccessor:", err)
 				return err
 			}
-			mLog.Println("File", file.Name(), "should be sent to node", node.NodeID)
+			sLog.Println("File", file.Name(), "should be sent to node", node.NodeID)
 			if node.NodeID != chord.localNode.NodeID {
 				fileBytes, err := os.ReadFile(chordResourcePath + file.Name())
 				if err != nil {
+					sLog.Println("Error in ReadFile:", err)
 					println("Error in ReadFile:", err)
 					mLog.Println("Error in ReadFile:", err)
 					return err
@@ -221,9 +238,10 @@ func (node *Node) notify(anotherNode *Node) {
 
 // Let successor to update keys and send corresponding keys to self
 func (node *Node) updateKeys(pre int, localNode *Node) {
-	mLog.Println("Remote update keys:", node.NodeID)
+	sLog.Println("Remote update keys:", node.NodeID)
 	client, err := rpc.DialHTTP("tcp", node.Ip+":"+strconv.Itoa(node.Port))
 	if err != nil {
+		sLog.Println("dialing:", err)
 		println("dialing:", err)
 		mLog.Println("dialing:", err)
 		return
@@ -236,5 +254,6 @@ func (node *Node) updateKeys(pre int, localNode *Node) {
 	if err != nil {
 		println("chord error:", err)
 		mLog.Println("chord error:", err)
+		sLog.Fatalln("chord error:", err)
 	}
 }

@@ -33,6 +33,7 @@ func (chord *Chord) checkSuccessor() error {
 		sLog.Println("Successor", chord.successor.NodeID, "failed")
 		successor, err := chord.findFirstAliveSuccessor()
 		if err != nil {
+			sLog.Println("Error in findFirstAliveSuccessor", err)
 			println("Error in findFirstAliveSuccessor", err)
 			mLog.Println("Error in findFirstAliveSuccessor", err)
 			return err
@@ -43,7 +44,9 @@ func (chord *Chord) checkSuccessor() error {
 
 		err = chord.recoverBackupKeys()
 		if err != nil {
-			sLog.Print("Fail to recover all backup keys:", err)
+			println("Fail to recover all backup keys:", err)
+			mLog.Println("Fail to recover all backup keys:", err)
+			sLog.Fatalln("Fail to recover all backup keys:", err)
 		}
 	} else {
 		client.Close()
@@ -78,6 +81,7 @@ func (chord *Chord) maintainSuccessorList() error {
 	for i := 0; i < m; i++ {
 		node, err = node.getSuccessor()
 		if err != nil {
+			sLog.Println("Error in getSuccessor", err)
 			println("Error in getSuccessor", err)
 			mLog.Println("Error in getSuccessor", err)
 			return err
@@ -100,10 +104,11 @@ func (chord *Chord) checkNode(node *Node) bool {
 
 // Check all backup keys while stabilization
 func (chord *Chord) checkBackup() error {
-	mLog.Println("Check backup")
+	sLog.Println("Check backup")
 	// Open the resource directory
 	dir, err := os.Open(chordBackupPath)
 	if err != nil {
+		sLog.Println("Error in Open", err)
 		println("Error in Open", err)
 		mLog.Println("Error in Open", err)
 		return err
@@ -114,6 +119,7 @@ func (chord *Chord) checkBackup() error {
 	// Get all files of the directory
 	files, err := dir.Readdir(0)
 	if err != nil {
+		sLog.Println("Error in Readdir", err)
 		println("Error in Readdir", err)
 		mLog.Println("Error in Readdir", err)
 		return err
@@ -123,6 +129,7 @@ func (chord *Chord) checkBackup() error {
 	for _, file := range files {
 		fileID, err := strconv.Atoi(file.Name())
 		if err != nil {
+			sLog.Println("Error in Atoi", err)
 			println("Error in Atoi", err)
 			mLog.Println("Error in Atoi", err)
 			return err
@@ -135,10 +142,11 @@ func (chord *Chord) checkBackup() error {
 }
 
 func (chord *Chord) allKeysBackup() error {
-	mLog.Println("Backup all keys")
+	sLog.Println("Backup all keys")
 	// Open the resource directory
 	dir, err := os.Open(chordResourcePath)
 	if err != nil {
+		sLog.Println("Error in Open", err)
 		println("Error in Open", err)
 		mLog.Println("Error in Open", err)
 		return err
@@ -149,6 +157,7 @@ func (chord *Chord) allKeysBackup() error {
 	// Get all files of the directory
 	files, err := dir.Readdir(0)
 	if err != nil {
+		sLog.Println("Error in Readdir", err)
 		println("Error in Readdir", err)
 		mLog.Println("Error in Readdir", err)
 		return err
@@ -158,6 +167,7 @@ func (chord *Chord) allKeysBackup() error {
 	for _, file := range files {
 		fileBytes, err := os.ReadFile(chordResourcePath + file.Name())
 		if err != nil {
+			sLog.Println("Error in ReadFile:", err)
 			println("Error in ReadFile:", err)
 			mLog.Println("Error in ReadFile:", err)
 			return err
@@ -168,10 +178,11 @@ func (chord *Chord) allKeysBackup() error {
 }
 
 func (chord *Chord) recoverBackupKeys() error {
-	mLog.Println("Recover backup keys")
+	sLog.Println("Recover backup keys")
 	// Open the resource directory
 	dir, err := os.Open(chordBackupPath)
 	if err != nil {
+		sLog.Println("Error in Open", err)
 		println("Error in Open", err)
 		mLog.Println("Error in Open", err)
 		return err
@@ -182,6 +193,7 @@ func (chord *Chord) recoverBackupKeys() error {
 	// Get all files of the directory
 	files, err := dir.Readdir(0)
 	if err != nil {
+		sLog.Println("Error in Readdir", err)
 		println("Error in Readdir", err)
 		mLog.Println("Error in Readdir", err)
 		return err
@@ -191,6 +203,7 @@ func (chord *Chord) recoverBackupKeys() error {
 	for _, file := range files {
 		fileBytes, err := os.ReadFile(chordBackupPath + file.Name())
 		if err != nil {
+			sLog.Println("Error in ReadFile:", err)
 			println("Error in ReadFile:", err)
 			mLog.Println("Error in ReadFile:", err)
 			return err

@@ -99,7 +99,8 @@ func (chord *Chord) SetPredecessor(args Args, reply *Node) error {
 
 	err := chord.allKeysBackup()
 	if err != nil {
-		sLog.Print("Fail to backup all keys:", err)
+		println("Fail to backup all keys:", err)
+		mLog.Fatalln("Fail to backup all keys:", err)
 	}
 	return nil
 }

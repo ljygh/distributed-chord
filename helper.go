@@ -5,8 +5,8 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/json"
-	"fmt"
 	"io"
+	"log"
 	"math"
 	"net/rpc"
 	"os"
@@ -49,7 +49,6 @@ func (node *Node) rpcCall(function string, args Args) (*Node, error) {
 	err = client.Call(function, args, &reply)
 	if err != nil {
 		mLog.Println("chord error:", err)
-		println("chord error:", err)
 		return nil, err
 	}
 	return reply, nil
@@ -80,22 +79,31 @@ func getSetting(filePath string, setting *Setting) {
 	// Open the JSON file
 	jsonFile, err := os.Open(filePath)
 	if err != nil {
-		fmt.Println(err)
-		return
+		mLog.Println(err)
+		log.Fatalln(err)
 	}
 	defer jsonFile.Close()
 
 	// Read the file content
 	byteValue, err := io.ReadAll(jsonFile)
 	if err != nil {
-		fmt.Println(err)
-		return
+		mLog.Println(err)
+		log.Fatalln(err)
 	}
 
 	// Unmarshal the JSON data into the struct
 	err = json.Unmarshal(byteValue, setting)
 	if err != nil {
-		fmt.Println(err)
-		return
+		mLog.Println(err)
+		log.Fatalln(err)
+	}
+}
+
+// remove all dirs in a directory
+func remove_dirs(path string) {
+	err := os.RemoveAll(path)
+	if err != nil {
+		mLog.Printf("Failed to remove directory: %v", err)
+		log.Fatalf("Failed to remove directory: %v", err)
 	}
 }

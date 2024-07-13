@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"crypto/tls"
+	"log"
 	"net/http"
 	"net/rpc"
 	"os"
@@ -16,6 +17,7 @@ func (chord *Chord) lookup(filename string) error {
 	// find the node which should store this file
 	fileID, err := strconv.Atoi(filename)
 	if err != nil {
+		mLog.Println("Filename is not an integer:", err)
 		println("Filename is not an integer:", err)
 		return err
 	}
@@ -123,22 +125,20 @@ func (chord *Chord) localStoreFile(filename string, fileBytes []byte, isBackup b
 
 	file, err := os.Create(filepath)
 	if err != nil {
-		println(err)
 		mLog.Println(err)
-		return
+		log.Fatalln(err)
 	}
 
 	_, err = file.Write(fileBytes)
 	if err != nil {
-		println(err)
 		mLog.Println(err)
-		return
+		log.Fatalln(err)
 	}
 
 	err = file.Close()
 	if err != nil {
-		println(err)
 		mLog.Println(err)
+		log.Fatalln(err)
 	}
 }
 
@@ -153,7 +153,7 @@ func (node *Node) isLocalFileExist(filename string) bool {
 	client, err := rpc.DialHTTP("tcp", node.Ip+":"+strconv.Itoa(node.Port))
 	if err != nil {
 		println("dialing:", err)
-		mLog.Fatal("dialing:", err)
+		mLog.Fatalln("dialing:", err)
 	}
 	defer client.Close()
 
@@ -163,7 +163,7 @@ func (node *Node) isLocalFileExist(filename string) bool {
 	err = client.Call("Chord.IsLocalFileExist", args, &reply)
 	if err != nil {
 		println("chord error:", err)
-		mLog.Fatal("chord error:", err)
+		mLog.Fatalln("chord error:", err)
 	}
 	return *reply
 }
@@ -206,8 +206,7 @@ func (node *Node) remoteStoreFile(filename string, fileBytes []byte, isBackup bo
 	resp, err := client.Post(url, "text/plain", bytes.NewReader(fileBytes))
 	if err != nil {
 		println(err)
-		mLog.Println(err)
-		return
+		mLog.Fatalln(err)
 	}
 	resp.Body.Close()
 }
