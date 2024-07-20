@@ -1,0 +1,1 @@
+./chord settings/chord3.json

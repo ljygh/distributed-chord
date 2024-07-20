@@ -11,5 +11,6 @@
     "resourcePath": "./resource",
     "ifCreate": true,
     "remoteIP": null,
-    "remotePort": null
+    "remotePort": null,
+    "ifCommand": true
 }

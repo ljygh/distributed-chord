@@ -2,9 +2,9 @@
     "ts": 3000,
     "tff": 1000,
     "tcp": 3000,
-    "id": 5,
+    "id": 49,
     "IP": "192.168.31.193",
-    "port": 8022,
+    "port": 8018,
     "ifMlog": true,
     "ifSlog": false,
     "logPath": "./log",
@@ -12,5 +12,5 @@
     "ifCreate": false,
     "remoteIP": "192.168.31.193",
     "remotePort": 8000,
-    "ifCommand": true
+    "ifCommand": false
 }

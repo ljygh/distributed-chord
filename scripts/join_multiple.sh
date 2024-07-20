@@ -1,0 +1,9 @@
+./chord settings/chord10.json &
+./chord settings/chord12.json &
+./chord settings/chord24.json &
+./chord settings/chord33.json &
+./chord settings/chord38.json &
+./chord settings/chord39.json &
+./chord settings/chord45.json &
+./chord settings/chord49.json &
+./chord settings/chord63.json &

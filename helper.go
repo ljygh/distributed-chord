@@ -55,6 +55,7 @@ func (node *Node) rpcCall(function string, args Args) (*Node, error) {
 func getSetting(filePath string, setting *Setting) {
 	// Open the JSON file
 	jsonFile, err := os.Open(filePath)
+	println("File path:", filePath)
 	if err != nil {
 		mLog.Println(err)
 		log.Fatalln(err)

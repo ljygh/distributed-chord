@@ -165,31 +165,35 @@ func main() {
 	// handle inputed commands
 	in := bufio.NewReader(os.Stdin)
 	for {
-		var input string
-		print("Command >>")
-		input, _ = in.ReadString('\n')
-		if len(input) > 0 {
-			input = input[:len(input)-1]
-		}
-
-		if strings.HasPrefix(input, "print") {
-			chord.printState()
-		} else if strings.HasPrefix(input, "store") {
-			filename := strings.SplitAfter(input, " ")[1]
-			err := chord.storeFile(filename)
-			if err != nil {
-				println("Fail to store file:", err)
-				mLog.Fatalln("Fail to store file:", err)
+		if setting.IfCommand {
+			var input string
+			print("Command >>")
+			input, _ = in.ReadString('\n')
+			if len(input) > 0 {
+				input = input[:len(input)-1]
 			}
-		} else if strings.HasPrefix(input, "find") {
-			filename := strings.SplitAfter(input, " ")[1]
-			err := chord.lookup(filename)
-			if err != nil {
-				println("Fail to find file:", err)
-				mLog.Fatalln("Fail to find file:", err)
+
+			if strings.HasPrefix(input, "print") {
+				chord.printState()
+			} else if strings.HasPrefix(input, "store") {
+				filename := strings.SplitAfter(input, " ")[1]
+				err := chord.storeFile(filename)
+				if err != nil {
+					println("Fail to store file:", err)
+					mLog.Fatalln("Fail to store file:", err)
+				}
+			} else if strings.HasPrefix(input, "find") {
+				filename := strings.SplitAfter(input, " ")[1]
+				err := chord.lookup(filename)
+				if err != nil {
+					println("Fail to find file:", err)
+					mLog.Fatalln("Fail to find file:", err)
+				}
+			} else {
+				println("Please write the correct syntax")
 			}
 		} else {
-			println("Please write the correct syntax")
+			time.Sleep(10 * time.Second)
 		}
 	}
 }

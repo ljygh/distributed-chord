@@ -66,4 +66,5 @@ type Setting struct {
 	IfCreate     bool   `json:"ifCreate"`
 	RemoteIP     string `json:"remoteIP"`
 	RemotePort   int    `json:"remotePort"`
+	IfCommand    bool   `json:"ifCommand"`
 }

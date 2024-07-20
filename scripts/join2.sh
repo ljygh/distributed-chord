@@ -1,0 +1,1 @@
+./chord settings/chord5.json
