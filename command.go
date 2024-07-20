@@ -67,6 +67,18 @@ func (chord *Chord) storeFile(filename string) error {
 	return nil
 }
 
+// Print a entry safely
+func safePrintEntry(entry *Entry) {
+	defer func() {
+		if r := recover(); r != nil {
+			println("Error occurred:", r)
+			println("Entry missing, please wait for stabilization")
+		}
+	}()
+
+	println("start:", entry.start, "node id:", entry.node.NodeID, "IP:", entry.node.Ip, "port:", entry.node.Port)
+}
+
 // Print all info of this chord node
 func (chord *Chord) printState() {
 	println()
@@ -81,7 +93,7 @@ func (chord *Chord) printState() {
 	println("Print finger table")
 	for i := 1; i <= m; i++ {
 		entry := chord.fingerTable[i]
-		println("start:", entry.start, "node id:", entry.node.NodeID, "IP:", entry.node.Ip, "port:", entry.node.Port)
+		safePrintEntry(entry)
 	}
 	println("Successor list:")
 	for i := 0; i < m; i++ {

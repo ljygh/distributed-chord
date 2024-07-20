@@ -6,7 +6,7 @@
     "IP": "192.168.31.193",
     "port": 8022,
     "ifMlog": true,
-    "ifSlog": false,
+    "ifSlog": true,
     "logPath": "./log",
     "resourcePath": "./resource",
     "ifCreate": false,

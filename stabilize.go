@@ -27,7 +27,7 @@ func (chord *Chord) stabilize() error {
 	if err != nil {
 		sLog.Println("Fail to maintain successor list:", err)
 		mLog.Println("Fail to maintain successor list:", err)
-		println("Fail to maintain successor list:", err)
+		// println("Fail to maintain successor list:", err)
 		return err
 	}
 
