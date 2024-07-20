@@ -192,7 +192,7 @@ func (node *Node) remoteStoreFile(filename string, fileBytes []byte, isBackup bo
 	// send the file
 	var url string
 	if isBackup {
-		url = "http://" + node.Ip + ":" + strconv.Itoa(node.Port+1) + "/resource" + "/chord" + strconv.Itoa(node.NodeID) + "_" + "/backup/" + "/" + filename
+		url = "http://" + node.Ip + ":" + strconv.Itoa(node.Port+1) + "/resource" + "/chord" + strconv.Itoa(node.NodeID) + "_" + "backup/" + filename
 	} else {
 		url = "http://" + node.Ip + ":" + strconv.Itoa(node.Port+1) + "/resource" + "/chord" + strconv.Itoa(node.NodeID) + "/" + filename
 	}
