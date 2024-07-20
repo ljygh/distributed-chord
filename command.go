@@ -59,12 +59,6 @@ func (chord *Chord) storeFile(filename string) error {
 
 	// create the file and send it to the node
 	fileBytes := []byte("This is file " + filename)
-	fileBytes = encrypt(fileBytes)
-	// if err != nil {
-	// 	cLog.Println("Error while reading file:", err)
-	// 	mLog.Println("Error while reading file:", err)
-	// 	return err
-	// }
 	node.remoteStoreFile(filename, fileBytes, false)
 	nodePredecessor, err := node.getPredecessor()
 	if err == nil && nodePredecessor != nil && node.NodeID != nodePredecessor.NodeID {
@@ -179,7 +173,7 @@ func (node *Node) remoteStoreFile(filename string, fileBytes []byte, isBackup bo
 		return
 	}
 
-	// set https connection
+	// set http connection
 	if isBackup {
 		mLog.Println("Remote backup to", node.NodeID, node.Ip, ":", node.Port+1)
 	} else {
@@ -198,9 +192,9 @@ func (node *Node) remoteStoreFile(filename string, fileBytes []byte, isBackup bo
 	// send the file
 	var url string
 	if isBackup {
-		url = "https://" + node.Ip + ":" + strconv.Itoa(node.Port+1) + "/backup/" + filename
+		url = "http://" + node.Ip + ":" + strconv.Itoa(node.Port+1) + "/resource" + "/chord" + strconv.Itoa(node.NodeID) + "_" + "/backup/" + "/" + filename
 	} else {
-		url = "https://" + node.Ip + ":" + strconv.Itoa(node.Port+1) + "/resource/" + filename
+		url = "http://" + node.Ip + ":" + strconv.Itoa(node.Port+1) + "/resource" + "/chord" + strconv.Itoa(node.NodeID) + "/" + filename
 	}
 	mLog.Println("Post to:", url)
 	resp, err := client.Post(url, "text/plain", bytes.NewReader(fileBytes))
@@ -208,5 +202,6 @@ func (node *Node) remoteStoreFile(filename string, fileBytes []byte, isBackup bo
 		println(err)
 		mLog.Fatalln(err)
 	}
+
 	resp.Body.Close()
 }

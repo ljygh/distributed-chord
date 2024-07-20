@@ -1,9 +1,6 @@
 package main
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/rand"
 	"encoding/json"
 	"io"
 	"log"
@@ -52,26 +49,6 @@ func (node *Node) rpcCall(function string, args Args) (*Node, error) {
 		return nil, err
 	}
 	return reply, nil
-}
-
-// Encrypt a file, return encrypted content
-func encrypt(plainTxt []byte) []byte {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		panic(err.Error())
-	}
-
-	aesgcm, err := cipher.NewGCM(block)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	ciphertext := aesgcm.Seal(nil, nonce, plainTxt, nil)
-	return ciphertext
 }
 
 // Get setting from json file

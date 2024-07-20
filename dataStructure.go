@@ -51,10 +51,6 @@ var chordBackupPath string
 
 var successorList [m]*Node
 
-// key and nonce to encrypt files
-var key []byte
-var nonce []byte
-
 // Struct used for setting
 type Setting struct {
 	Ts           int    `json:"ts"`

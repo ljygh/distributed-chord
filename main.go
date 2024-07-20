@@ -2,14 +2,12 @@ package main
 
 import (
 	"bufio"
-	"crypto/rand"
 	"io"
 	"log"
 	"net"
 	"net/http"
 	"net/rpc"
 	"os"
-	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -92,19 +90,6 @@ func main() {
 		sLog = *log.New(io.Discard, "", log.Lshortfile)
 	}
 
-	// Init key and nonce for encrypt
-	key = make([]byte, 32)
-	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		println("Error while generating key:", err)
-		mLog.Fatalln("Error while generating key:", err)
-	}
-
-	nonce = make([]byte, 12)
-	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		println("Error while generating nonce:", err)
-		mLog.Fatalln("Error while generating nonce:", err)
-	}
-
 	// Create chord resource folder and backup folder
 	chordResourcePath = resourcePath + "/chord" + strconv.Itoa(chord.localNode.NodeID) + "/"
 	if _, err := os.Stat(chordResourcePath); err != nil {
@@ -125,7 +110,7 @@ func main() {
 			mLog.Fatalln(err)
 		}
 	}
-	println("Create resource folder:", resourcePath+"/chord"+strconv.Itoa(chord.localNode.NodeID)+"/")
+	println("Create resource folder:", chordResourcePath)
 
 	chordBackupPath = resourcePath + "/chord" + strconv.Itoa(chord.localNode.NodeID) + "_backup/"
 	if _, err := os.Stat(chordBackupPath); err != nil {
@@ -146,7 +131,7 @@ func main() {
 			mLog.Fatalln(err)
 		}
 	}
-	println("Create backup folder:", resourcePath+"/chord"+strconv.Itoa(chord.localNode.NodeID)+"_backup/")
+	println("Create backup folder:", chordBackupPath)
 
 	// Register rpc and serve
 	rpc.Register(&chord)
@@ -158,21 +143,16 @@ func main() {
 	}
 	go http.Serve(l, nil)
 
-	// Set https server
-	httpsL, e := net.Listen("tcp", ":"+strconv.Itoa(chord.localNode.Port+1))
-	if e != nil {
-		mLog.Println("https listen error:", e)
-		log.Fatal("https listen error:", e)
-	}
-	http.HandleFunc("/", httpsHandler)
-	go http.ServeTLS(httpsL, nil, "example.crt", "example.key")
+	// Set http server
+	http.HandleFunc("/", httpHandler)
+	go http.ListenAndServe(":"+strconv.Itoa(chord.localNode.Port+1), nil)
 
 	// Create or join according number of arguments
-	if len(os.Args) <= 7 {
+	if setting.IfCreate {
 		chord.create()
 	} else {
-		joinNodeIP := os.Args[7]
-		joinNodePort, _ := strconv.Atoi(os.Args[8])
+		joinNodeIP := setting.RemoteIP
+		joinNodePort := setting.RemotePort
 		joinNode := Node{0, joinNodeIP, joinNodePort}
 		chord.join(joinNode)
 	}
@@ -235,23 +215,15 @@ func checkPredecessor_periodic() {
 	}
 }
 
-// Https handler
-func httpsHandler(w http.ResponseWriter, req *http.Request) {
+// Http handler
+func httpHandler(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "POST" { // store file after getting post
 		mLog.Println("Get post")
-		urlPath := req.URL.Path
-		dir := path.Base(path.Dir(urlPath))
-		filename := path.Base(urlPath)
-		mLog.Println("Receive file:", filename)
-		mLog.Println("Save to:", dir)
 
-		var file *os.File
-		var err error
-		if dir == "resource" {
-			file, err = os.Create(chordResourcePath + filename)
-		} else {
-			file, err = os.Create(chordBackupPath + filename)
-		}
+		filePath := "." + req.RequestURI
+		mLog.Println("Post file to:", filePath)
+
+		file, err := os.Create(filePath)
 		if err != nil {
 			println(err)
 			mLog.Fatalln(err)
