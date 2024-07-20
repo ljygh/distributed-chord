@@ -13,16 +13,12 @@ go build
 ```
 
 ## Run
-Below are some commands used to run functionality on the chord program  
-
-go build  
-./chord 0 8000  
-join: ./chord 10 8004 127.0.0.1 8000 false &  
-./create.sh  
-./join_multiple.sh runs all the commands concurrently  
-print: prints information of node  
-store 1 (store a file called 1)  
-files are stored in the succesor  
+Below are some commands used to run functionality on the chord program：  
+1. Run chord: Scripts used to start a chord node are shown in `/scripts`. The scripts use json files for setting shown in `/settings`.
+2. Commands:
+- print: To print information of node.  
+- store 1: To store a file called 1.  
+- find 1: To find a file called 1.
 
 The arguments take in an id, port and an IP-adress
 
@@ -65,6 +61,9 @@ This is used to fix mistakes caused by concurrent joining and node failures. See
 ### 7. File backup and check failures
 1. Upload的时候同时将文件上传到node的predecessor。
 2. Stabilize的时候check successor是否alive，如果非alive，将这个node中的backup files recover到正确的nodes。
+
+## Implementation
+Rpc is used to implement the algorithm and http is used to transfer files.
 
 
 
