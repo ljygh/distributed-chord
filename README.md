@@ -65,6 +65,21 @@ This is used to fix mistakes caused by concurrent joining and node failures. See
 ## Implementation
 Rpc is used to implement the algorithm and http is used to transfer files.
 
+## Tests
+1. Node create
+2. Print state
+3. Node join
+4. Store file
+5. Find file
+6. Node join cocurrently
+7. Stabilize and fix fingers
+8. Update keys
+9. Store file
+10. Find file
+11. Handle node failures
+12. Store file
+13. Find file
+
 
 
 
